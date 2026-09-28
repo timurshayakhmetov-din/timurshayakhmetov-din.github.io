@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Моя цифра свободы</title>
+<style>@font-face{font-family:"Playfair Display";src:url(/fonts/Playfair.ttf) format("truetype");font-weight:400 900;font-display:swap}@font-face{font-family:"Playfair Display";font-style:italic;src:url(/fonts/Playfair-Italic.ttf) format("truetype");font-weight:400 900;font-display:swap}@font-face{font-family:"IBM Plex Sans";src:url(/fonts/IBMPlexSans.ttf) format("truetype");font-weight:100 700;font-display:swap}</style>
+</head>
+<body>
+<style>
+  :root{
+    --bg:#F1E7D2;
+    --paper:#FAF5E9;
+    --field:#FFFFFF;
+    --ink:#241C12;
+    --ink-muted:#6B5E45;
+    --gold:#C6A15B;
+    --gold-ink:#8E6A28;
+    --line:rgba(198,161,91,.42);
+    --hero-a:#101A2E;
+    --hero-b:#0A1220;
+    --on-hero:#F3ECDA;
+    --on-hero-muted:#B9AF98;
+    --seg-past:#D9CCAE;
+    --seg-save:#C6A15B;
+    --seg-free:#2E4A7A;
+    --good:#3D7A4E;
+    --good-bg:rgba(61,122,78,.10);
+    --warn:#A2552C;
+    --warn-bg:rgba(162,85,44,.10);
+    --track:rgba(243,236,218,.14);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --bg:#0B1220;
+      --paper:#141E33;
+      --field:#0F1829;
+      --ink:#EFE6D2;
+      --ink-muted:#A99F88;
+      --gold-ink:#D9B878;
+      --line:rgba(198,161,91,.32);
+      --hero-a:#18253F;
+      --hero-b:#101A2E;
+      --seg-past:#3A4560;
+      --seg-free:#7F9CCB;
+      --good:#7FC08F;
+      --good-bg:rgba(127,192,143,.12);
+      --warn:#E39A6E;
+      --warn-bg:rgba(227,154,110,.12);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --bg:#0B1220;
+    --paper:#141E33;
+    --field:#0F1829;
+    --ink:#EFE6D2;
+    --ink-muted:#A99F88;
+    --gold-ink:#D9B878;
+    --line:rgba(198,161,91,.32);
+    --hero-a:#18253F;
+    --hero-b:#101A2E;
+    --seg-past:#3A4560;
+    --seg-free:#7F9CCB;
+    --good:#7FC08F;
+    --good-bg:rgba(127,192,143,.12);
+    --warn:#E39A6E;
+    --warn-bg:rgba(227,154,110,.12);
+  }
+
+  *{box-sizing:border-box;}
+  [hidden]{display:none!important;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55;}
+  .wrap{max-width:780px;margin:0 auto;padding-inline:20px;}
+
+  .hero{background:linear-gradient(165deg,var(--hero-a),var(--hero-b));color:var(--on-hero);padding-block:48px 40px;}
+  .eyebrow{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 12px;}
+  .hero h1{font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:clamp(28px,4.6vw,40px);line-height:1.12;margin:0 0 12px;text-wrap:balance;}
+  .hero p{margin:0;max-width:560px;color:var(--on-hero-muted);}
+  .demo-tag{display:inline-block;margin-top:16px;font-size:12px;color:var(--on-hero-muted);border:1px dashed rgba(198,161,91,.5);border-radius:100px;padding:4px 12px;}
+
+  main.wrap{display:flex;flex-direction:column;gap:28px;padding-block:36px 56px;}
+
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:flex;flex-direction:column;gap:18px;}
+  .step{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);margin:0;}
+  .panel h2{font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:23px;line-height:1.2;margin:0;text-wrap:balance;}
+  .lead{margin:0;color:var(--ink-muted);max-width:62ch;}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .grid.two{grid-template-columns:repeat(2,1fr);}
+  @media (max-width:600px){.grid,.grid.two{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field label{font-size:13px;font-weight:500;}
+  .field .hint{font-size:12px;color:var(--ink-muted);line-height:1.4;}
+  .field input{font:600 16px/1.2 "IBM Plex Sans",system-ui,sans-serif;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);background:var(--field);color:var(--ink);width:100%;font-variant-numeric:tabular-nums;}
+  .field input:focus{outline:2px solid var(--gold);outline-offset:1px;}
+
+  .segmented{display:flex;gap:8px;flex-wrap:wrap;}
+  .segmented button{font:600 13px "IBM Plex Sans",system-ui,sans-serif;padding:9px 16px;border-radius:100px;border:1.5px solid var(--line);background:var(--field);color:var(--ink-muted);cursor:pointer;}
+  .segmented button.is-active{background:var(--hero-a);border-color:var(--hero-a);color:var(--on-hero);}
+  :root[data-theme="dark"] .segmented button.is-active{background:var(--gold);border-color:var(--gold);color:#101A2E;}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .segmented button.is-active{background:var(--gold);border-color:var(--gold);color:#101A2E;}}
+  .segmented button:focus-visible,.cta-btn:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  /* Rate cards */
+  .rates{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:600px){.rates{grid-template-columns:1fr;}}
+  .rate{text-align:left;font-family:inherit;color:var(--ink);background:var(--field);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;flex-direction:column;gap:2px;}
+  .rate .r-name{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);}
+  .rate .r-val{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:28px;line-height:1.1;}
+  .rate .r-sub{font-size:13px;color:var(--ink-muted);}
+  .rate .r-who{font-size:12px;color:var(--ink-muted);margin-top:6px;line-height:1.35;}
+  .rate.is-active{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold) inset;}
+  .rate:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+  /* Timeline */
+  .timeline{display:flex;flex-direction:column;gap:10px;}
+  .tl-bar{display:flex;height:34px;border-radius:8px;overflow:hidden;background:var(--seg-past);}
+  .tl-seg{display:flex;align-items:center;justify-content:center;font:700 14px "IBM Plex Sans",sans-serif;white-space:nowrap;overflow:hidden;transition:flex-basis .3s ease;}
+  .tl-past{background:var(--seg-past);color:var(--ink);}
+  .tl-save{background:var(--seg-save);color:#241C12;}
+  .tl-free{background:var(--seg-free);color:#F3ECDA;}
+  :root[data-theme="dark"] .tl-free{color:#101A2E;}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tl-free{color:#101A2E;}}
+  .tl-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-muted);}
+  .tl-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:3px;display:inline-block;}
+  .tl-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-muted);font-variant-numeric:tabular-nums;}
+  .callout{border-radius:12px;padding:14px 16px;background:var(--bg);font-size:14px;}
+  .callout strong{font-weight:600;}
+
+  .flag{border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.45;}
+  .flag.warn{background:var(--warn-bg);color:var(--warn);}
+  .flag.good{background:var(--good-bg);color:var(--good);}
+
+  /* Results */
+  .result{background:linear-gradient(165deg,var(--hero-a),var(--hero-b));color:var(--on-hero);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;gap:18px;}
+  .result .step{color:var(--gold);}
+  .result h2{color:var(--on-hero);}
+  .big-label{font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--on-hero-muted);margin:0;}
+  .big{font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:clamp(30px,6.4vw,44px);line-height:1.08;font-variant-numeric:tabular-nums;margin:2px 0 0;overflow-wrap:anywhere;}
+  .big-sub{font-size:14px;color:var(--on-hero-muted);margin:4px 0 0;}
+  .rows{display:flex;flex-direction:column;}
+  .row{padding:16px 0;border-top:1px solid rgba(198,161,91,.35);}
+  .row:first-child{border-top:none;padding-top:0;}
+  .kv{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:4px 0;color:var(--on-hero-muted);}
+  .kv b{color:var(--on-hero);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  .kv.alert b{color:#F0A57A;}
+  .kv.ok b{color:#9DD3AA;}
+  .ouch{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-size:19px;color:var(--gold);margin:0;}
+
+  .track{height:10px;border-radius:100px;background:var(--track);overflow:hidden;display:flex;}
+  .fill-a{background:var(--gold);transition:width .3s ease;}
+  .fill-b{background:#E8D7AE;opacity:.55;transition:width .3s ease;}
+  .cap{font-size:12px;color:var(--on-hero-muted);margin:8px 0 0;}
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:520px){.compare{grid-template-columns:1fr;}}
+  .cmp{border:1px solid rgba(198,161,91,.35);border-radius:12px;padding:14px 16px;}
+  .cmp .big{font-size:clamp(24px,5vw,32px);}
+  .cmp.was .big{color:var(--on-hero-muted);text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:rgba(198,161,91,.7);}
+
+  /* Question */
+  .question{border:1.5px dashed var(--gold);border-radius:16px;padding:26px 24px;display:flex;flex-direction:column;gap:14px;align-items:flex-start;background:var(--paper);}
+  .question h2{font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:24px;line-height:1.2;margin:0;text-wrap:balance;}
+  .cta-btn{font:600 15px "IBM Plex Sans",system-ui,sans-serif;background:var(--gold);color:#101A2E;border:none;border-radius:100px;padding:13px 24px;cursor:pointer;}
+  .cta-btn:hover{filter:brightness(1.05);}
+
+  details{border-top:1px solid var(--line);padding-top:12px;}
+  summary{cursor:pointer;font-weight:600;font-size:14px;color:var(--gold-ink);}
+  details .body{font-size:14px;color:var(--ink-muted);display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:64ch;}
+  details .body p{margin:0;}
+  details .body b{color:var(--ink);}
+
+  .gap-paths{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:520px){.gap-paths{grid-template-columns:1fr;}}
+  .path{background:var(--bg);border-radius:12px;padding:14px 16px;font-size:14px;}
+  .path b{display:block;font-family:"Playfair Display",Georgia,serif;font-size:20px;margin-bottom:2px;font-variant-numeric:tabular-nums;}
+
+  .final{background:linear-gradient(165deg,var(--hero-a),var(--hero-b));color:var(--on-hero);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;}
+  .final h2{font-family:"Playfair Display",Georgia,serif;font-style:italic;font-weight:600;font-size:26px;margin:0;}
+  .final p{margin:0;color:var(--on-hero-muted);max-width:60ch;}
+  .code{display:inline-block;align-self:flex-start;border:3px solid var(--gold);border-radius:100px;padding:8px 22px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;}
+
+  footer.wrap{padding-block:0 48px;font-size:13px;color:var(--ink-muted);}
+  footer p{margin:0 0 8px;}
+  .signoff{color:var(--ink);font-weight:600;}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none!important;}}
+
+  /* v3 additions */
+  .tl-wrap{position:relative;padding-top:18px;}
+  .tl-mark{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none;}
+  .tl-mark i{width:10px;height:10px;background:var(--gold);transform:rotate(45deg);border:2px solid var(--paper);display:block;}
+  .tl-mark i::after{content:"";}
+  .goals{display:flex;flex-direction:column;gap:10px;}
+  .goal-row{display:grid;grid-template-columns:1.4fr 1fr .7fr;gap:10px;align-items:end;}
+  @media (max-width:600px){.goal-row{grid-template-columns:1fr 1fr;}.goal-row .field:first-child{grid-column:1 / -1;}}
+  .field input[type="text"]:not([data-num]){font:500 15px/1.2 "IBM Plex Sans",system-ui,sans-serif;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);background:var(--field);color:var(--ink);width:100%;}
+  .field input[type="text"]:not([data-num]):focus{outline:2px solid var(--gold);outline-offset:1px;}
+  .sub-h{font-size:14px;font-weight:600;margin:0;}
+  .foundation{border-top:1px solid var(--line);padding-top:14px;font-size:14px;color:var(--ink-muted);display:flex;flex-direction:column;gap:6px;}
+  .foundation b{color:var(--ink);}
+  .next{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none;counter-reset:n;}
+  .next li{counter-increment:n;display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;color:var(--on-hero-muted);}
+  .next li::before{content:counter(n);font-family:"Playfair Display",Georgia,serif;font-weight:700;font-size:26px;line-height:1;color:var(--gold);}
+  .next li b{color:var(--on-hero);display:block;}
+  .final a,.panel a{color:var(--gold);}
+  .contact{border-top:1px solid rgba(198,161,91,.35);padding-top:14px;font-size:14px;color:var(--on-hero-muted);}
+  .contact b{color:var(--on-hero);}
+  .warn-dark{margin:0;border-radius:12px;padding:12px 14px;font-size:14px;line-height:1.45;background:rgba(240,165,122,.14);color:#F0A57A;border:1px solid rgba(240,165,122,.35);}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Мини-продукт</p>
+    <h1>Моя цифра свободы</h1>
+    <p>Сколько нужно накопить, чтобы однажды жить на капитал, и сколько для этого откладывать каждый месяц. Сначала честно — если деньги просто лежат. Потом — как меняется картина, если они работают.</p>
+    <span class="demo-tag">Поля заполнены примером — замени на свои цифры</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- Шаг 1 -->
+  <section class="panel">
+    <p class="step">Шаг 1 · Твоя жизнь на одной линии</p>
+    <h2>Сколько лет копить и сколько лет жить на капитал</h2>
+    <div class="grid">
+      <div class="field">
+        <label for="ageNow">Мне сейчас, лет</label>
+        <input type="text" id="ageNow" value="35" inputmode="numeric" autocomplete="off" data-num>
+      </div>
+      <div class="field">
+        <label for="ageFree">Хочу жить на капитал с, лет</label>
+        <input type="text" id="ageFree" value="55" inputmode="numeric" autocomplete="off" data-num>
+      </div>
+      <div class="field">
+        <label for="ageTo">Капитала должно хватить до, лет</label>
+        <input type="text" id="ageTo" value="85" inputmode="numeric" autocomplete="off" data-num>
+        <span class="hint">Лучше с запасом: люди всё чаще живут дольше 85.</span>
+      </div>
+    </div>
+
+    <div class="timeline" aria-live="polite">
+      <div class="tl-wrap">
+        <div id="tlMarks"></div>
+        <div class="tl-bar">
+          <div class="tl-seg tl-past" id="segPast"></div>
+          <div class="tl-seg tl-save" id="segSave"></div>
+          <div class="tl-seg tl-free" id="segFree"></div>
+        </div>
+      </div>
+      <div class="tl-scale"><span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span></div>
+      <div class="tl-legend">
+        <span><i class="dot" style="background:var(--seg-past)"></i>Уже прожито</span>
+        <span><i class="dot" style="background:var(--seg-save)"></i>Копишь</span>
+        <span><i class="dot" style="background:var(--seg-free)"></i>Живёшь на капитал</span>
+        <span id="legendGoal"><i class="dot" style="background:var(--gold);transform:rotate(45deg);border-radius:1px"></i>Крупные цели</span>
+      </div>
+      <div class="callout" id="tlCallout"></div>
+    </div>
+    <div class="flag warn" id="ageError" hidden></div>
+  </section>
+
+  <!-- Шаг 2 -->
+  <section class="panel">
+    <p class="step">Шаг 2 · Твои деньги сегодня</p>
+    <h2>Сколько приходит, сколько уходит и что уже есть</h2>
+    <div class="field" style="max-width:360px">
+      <label>Валюта расчёта</label>
+      <div class="segmented" id="curGroup">
+        <button type="button" data-cur="₽" class="is-active">₽ рубли</button>
+        <button type="button" data-cur="$">$ доллары</button>
+        <button type="button" data-cur="€">€ евро</button>
+      </div>
+      <span class="hint">Считай в той валюте, в которой живёшь.</span>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label for="income">Доход в месяц</label>
+        <input type="text" id="income" value="300000" inputmode="numeric" autocomplete="off" data-num>
+        <span class="hint">Всё, что приходит после налогов.</span>
+      </div>
+      <div class="field">
+        <label for="expenses">Расходы в месяц</label>
+        <input type="text" id="expenses" value="150000" inputmode="numeric" autocomplete="off" data-num>
+        <span class="hint">На что реально уходят деньги.</span>
+      </div>
+      <div class="field">
+        <label for="capital">Уже накоплено</label>
+        <input type="text" id="capital" value="3000000" inputmode="numeric" autocomplete="off" data-num>
+        <span class="hint">Накопления и инвестиции, кроме подушки безопасности.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Шаг 3 -->
+  <section class="panel">
+    <p class="step">Шаг 3 · Чего ты хочешь</p>
+    <h2>Жизнь на капитал и большие цели по пути</h2>
+
+    <div class="field">
+      <label for="withdraw" id="withdrawLabel">С 55 до 85 лет буду забирать из капитала в месяц</label>
+      <input type="text" id="withdraw" value="150000" inputmode="numeric" autocomplete="off" data-num style="max-width:320px">
+      <span class="hint">Это твоя «зарплата» от капитала: на жизнь, вместо работы. Считай в сегодняшних деньгах — сумма будет расти вместе с ценами. Ориентир — не меньше, чем тратишь сейчас.</span>
+    </div>
+    <div class="flag warn" id="withdrawWarn" hidden>Эта сумма меньше, чем ты тратишь сейчас. Если так и задумано (например, к тому времени будет выплачена ипотека), всё в порядке. Если нет — лучше взять не меньше текущих расходов.</div>
+
+    <p class="sub-h">Крупные разовые цели до начала жизни на капитал</p>
+    <div class="goals">
+      <div class="goal-row">
+        <div class="field"><label for="g1n">Цель</label><input type="text" id="g1n" value="Образование детей"></div>
+        <div class="field"><label for="g1a">Сколько стоит сегодня</label><input type="text" id="g1a" value="2000000" inputmode="numeric" autocomplete="off" data-num></div>
+        <div class="field"><label for="g1t">Через, лет</label><input type="text" id="g1t" value="8" inputmode="numeric" autocomplete="off" data-num></div>
+      </div>
+      <div class="goal-row">
+        <div class="field"><label for="g2n">Цель</label><input type="text" id="g2n" value="Машина"></div>
+        <div class="field"><label for="g2a">Сколько стоит сегодня</label><input type="text" id="g2a" value="2500000" inputmode="numeric" autocomplete="off" data-num></div>
+        <div class="field"><label for="g2t">Через, лет</label><input type="text" id="g2t" value="5" inputmode="numeric" autocomplete="off" data-num></div>
+      </div>
+      <div class="goal-row">
+        <div class="field"><label for="g3n">Цель</label><input type="text" id="g3n" value="" placeholder="Например, дом у моря"></div>
+        <div class="field"><label for="g3a">Сколько стоит сегодня</label><input type="text" id="g3a" value="" inputmode="numeric" autocomplete="off" data-num></div>
+        <div class="field"><label for="g3t">Через, лет</label><input type="text" id="g3t" value="" inputmode="numeric" autocomplete="off" data-num></div>
+      </div>
+    </div>
+    <span class="hint" style="font-size:12px;color:var(--ink-muted)">Если цель позже начала жизни на капитал, расчёт считает, что деньги на неё нужны к началу свободы.</span>
+  </section>
+
+  <!-- Результат 1 -->
+  <section class="result" id="resultA">
+    <p class="step">Результат 1 · Если деньги просто лежат</p>
+    <div class="rows">
+      <div class="row">
+        <p class="big-label" id="targetLabel">Капитал для жизни с 55 лет</p>
+        <p class="big" id="outTarget">—</p>
+        <p class="big-sub" id="outTargetSub"></p>
+        <p class="big-sub" id="outGoals"></p>
+        <p class="big-sub" id="outNominal"></p>
+      </div>
+      <div class="row">
+        <p class="big-label">Нужно откладывать</p>
+        <p class="big" id="outA">—</p>
+        <p class="big-sub" id="outASub"></p>
+      </div>
+      <div class="row">
+        <div class="kv"><span>Твой доход</span><b id="kvIncome">—</b></div>
+        <div class="kv"><span>Откладываешь</span><b id="kvSaveA">—</b></div>
+        <div class="kv" id="kvLeftRowA"><span>Остаётся на жизнь</span><b id="kvLeftA">—</b></div>
+        <div class="kv"><span>Сейчас тратишь</span><b id="kvExp">—</b></div>
+      </div>
+      <p class="ouch" id="ouch"></p>
+      <p class="warn-dark" id="shortA" hidden></p>
+    </div>
+  </section>
+
+  <!-- Вопрос -->
+  <section class="question" id="question">
+    <h2>Хочешь посмотреть, что будет, если деньги будут работать на тебя?</h2>
+    <p class="lead">Пока деньги просто лежат, они не только не растут, но и дешевеют: инфляция каждый год понемногу их съедает. Поэтому откладывать приходится так много. Если деньги инвестировать, часть цифры соберёт рост капитала.</p>
+    <button type="button" class="cta-btn" id="revealBtn">Да, покажи</button>
+  </section>
+
+  <!-- Шаг 4 -->
+  <section class="panel" id="rateStep" hidden>
+    <p class="step">Шаг 4 · Как будут расти вложения</p>
+    <h2>Выбери среднюю доходность в год</h2>
+    <p class="lead">Это доходность в долларах, как её обычно пишут брокеры и фонды. Инфляцию 3% в год расчёт вычитает сам, поэтому все итоговые суммы остаются в сегодняшних деньгах.</p>
+    <div class="rates" id="rateGroup">
+      <button type="button" class="rate" data-r="0.08">
+        <span class="r-name">Сдержанно</span>
+        <span class="r-val">8%</span>
+        <span class="r-sub">≈ 5% сверх инфляции</span>
+        <span class="r-who">Как мировой рынок акций в среднем за 125 лет.</span>
+      </button>
+      <button type="button" class="rate is-active" data-r="0.09">
+        <span class="r-name">В среднем</span>
+        <span class="r-val">9%</span>
+        <span class="r-sub">≈ 6% сверх инфляции</span>
+        <span class="r-who">Между мировым рынком и рынком США.</span>
+      </button>
+      <button type="button" class="rate" data-r="0.10">
+        <span class="r-name">Как лучший рынок</span>
+        <span class="r-val">10%</span>
+        <span class="r-sub">≈ 7% сверх инфляции</span>
+        <span class="r-who">Как рынок акций США за 125 лет (9,8%).</span>
+      </button>
+    </div>
+
+    <details>
+      <summary>Откуда 8–10% и насколько это реально?</summary>
+      <div class="body">
+        <p>Это средняя доходность <b>портфеля в основном из акций</b> на длинном сроке. Мировые акции за 125 лет давали около 8% в год в долларах, рынок США — 9,8%.</p>
+        <p>Облигации и вклады растут медленнее, поэтому чем их больше в портфеле, тем ниже ставку стоит брать. И это среднее за десятилетия: бывали периоды по 10 лет почти без роста. Для надёжного плана лучше считать по нижней ставке.</p>
+        <p>Какая доля акций подходит именно тебе, покажет бесплатный тест на риск-профиль в Telegram: <a href="https://t.me/timur_risk_bot?start=cifra" target="_blank" rel="noopener">пройти тест «Твой риск-профиль»</a>.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Почему инфляция 3% и почему ориентир — доллар?</summary>
+      <div class="body">
+        <p><b>3%</b> — округлённая средняя инфляция доллара: за 125 лет — 2,9% в год, за последние 10 лет — 3,2%.</p>
+        <p><b>Доллар</b> — потому что по долларовым рынкам есть данные за 125 лет, с войнами, кризисами и подъёмами. Это самая длинная и надёжная история.</p>
+        <p>Считать можно в рублях, долларах или евро: рост сверх инфляции в этих валютах похож. В рублях и доходность, и инфляция выше, поэтому проценты выглядят больше, но покупательная сила растёт примерно так же.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- Результат 2 -->
+  <section class="result" id="resultB" hidden>
+    <p class="step">Результат 2 · Если инвестировать</p>
+    <div class="compare">
+      <div class="cmp was">
+        <p class="big-label">Деньги лежат</p>
+        <p class="big" id="cmpA">—</p>
+      </div>
+      <div class="cmp">
+        <p class="big-label">Деньги работают</p>
+        <p class="big" id="cmpB">—</p>
+      </div>
+    </div>
+    <p class="big-sub" id="cmpSub"></p>
+
+    <div class="rows">
+      <div class="row">
+        <p class="big-label">Источники твоей цифры</p>
+        <div class="track" style="margin-top:12px"><div class="fill-a" id="partOwn"></div><div class="fill-b" id="partGrowth"></div></div>
+        <div class="kv" style="margin-top:10px"><span><i class="dot" style="background:var(--gold)"></i> Ты сам: накопленное и взносы</span><b id="kvOwn">—</b></div>
+        <div class="kv"><span><i class="dot" style="background:#E8D7AE"></i> Рост капитала</span><b id="kvGrowth">—</b></div>
+      </div>
+      <div class="row">
+        <p class="big-label">Если больше не откладывать ни копейки</p>
+        <div class="track" style="margin-top:12px"><div class="fill-a" id="progressBar"></div></div>
+        <p class="cap" id="progressCap"></p>
+      </div>
+    </div>
+    <p class="warn-dark" id="shortB" hidden></p>
+  </section>
+
+  <!-- Бюджет -->
+  <section class="panel" id="gapStep" hidden>
+    <p class="step">Что это значит для твоего бюджета</p>
+    <h2 id="gapTitle">—</h2>
+    <p class="lead" id="gapLead"></p>
+    <div class="gap-paths" id="gapPaths">
+      <div class="path"><b id="gapEarn">—</b>зарабатывать больше в месяц <span id="gapEarnPct"></span></div>
+      <div class="path"><b id="gapCut">—</b>сократить необязательные расходы <span id="gapCutPct"></span></div>
+    </div>
+    <p class="lead" id="gapNote"></p>
+    <div class="foundation">
+      <p style="margin:0"><b>Важно: этот расчёт исходит из того, что Фундамент твоего финансового дома уже построен.</b></p>
+      <p style="margin:0" id="foundationText"></p>
+    </div>
+  </section>
+
+  <!-- Финал -->
+  <section class="final" id="finalStep" hidden>
+    <p class="eyebrow" style="margin:0">Что делать дальше</p>
+    <h2>Цифра есть. Четыре шага, чтобы к ней двигаться</h2>
+    <ol class="next">
+      <li><span><b>Проверь Фундамент</b>Подушка на 6–12 месяцев расходов, никаких дорогих кредитов, страховка жизни и здоровья. Если чего-то нет — начни с этого.</span></li>
+      <li><span><b>Узнай свой риск-профиль</b>Он подскажет, какую ставку из шага 4 честно брать для расчёта. <a href="https://t.me/timur_risk_bot?start=cifra" target="_blank" rel="noopener">Бесплатный тест в Telegram</a>.</span></li>
+      <li><span><b>Плати сначала себе</b>Откладывать то, что осталось в конце месяца, почти никогда не работает: остаётся мало или ничего. Твои <span id="nextSum">—</span> — это не остаток, а первый и обязательный платёж будущему себе. Сначала себе, потом жизнь на остальное. Так и появляется пассивный доход.</span></li>
+      <li><span><b>Возвращайся раз в год</b>Доход, расходы и цели меняются. Пересчитай цифру с новыми данными — и сохрани скриншот этого экрана, чтобы сравнить.</span></li>
+    </ol>
+    <p class="contact">Свою цифру ты теперь знаешь. Дальше главное: задуматься, принять решение и начать. Следующие инструменты и мысли о деньгах в Telegram-канале: <a href="https://t.me/timur_financiero" target="_blank" rel="noopener"><b>t.me/timur_financiero</b></a>.</p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>Расчёт ориентировочный, для личного планирования. Это не инвестиционная рекомендация и не гарантия доходности. Взносы в расчёте растут вместе с инфляцией, как обычно растёт и доход. Все цифры считаются прямо в браузере и никуда не отправляются.</p>
+  <p class="signoff">Мира и добра!</p>
+</footer>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const ids = ['ageNow','ageFree','ageTo','income','expenses','capital','withdraw','g1a','g1t','g2a','g2t','g3a','g3t','g1n','g2n','g3n'];
+  const el = {}; ids.forEach(i => el[i] = $(i));
+  let cur = '₽', rNom = 0.09, revealed = false, withdrawTouched = false;
+  const INFL = 0.03;
+
+  const num = i => { const v = parseFloat(String(el[i].value).replace(/[^\d]/g,'')); return isFinite(v) ? Math.max(0, v) : 0; };
+  function group(input){
+    const raw = input.value, pos = input.selectionStart ?? raw.length;
+    const digitsBefore = raw.slice(0, pos).replace(/\D/g,'').length;
+    const d = raw.replace(/\D/g,'');
+    const f = d ? Number(d).toLocaleString('ru-RU').replace(/\s/g,'\u00A0') : '';
+    input.value = f;
+    let c = 0, k = 0;
+    while (k < f.length && c < digitsBefore){ if (/\d/.test(f[k])) c++; k++; }
+    try { input.setSelectionRange(k, k); } catch(e) {}
+  }
+  document.querySelectorAll('input[data-num]').forEach(inp => {
+    const d = inp.value.replace(/\D/g,''); if (d) inp.value = Number(d).toLocaleString('ru-RU').replace(/\s/g,'\u00A0');
+    inp.addEventListener('input', () => group(inp));
+  });
+  const fmt = n => Math.round(n).toLocaleString('ru-RU') + ' ' + cur;
+  const fmtBig = n => Math.abs(n) >= 1e6 ? (n/1e6).toLocaleString('ru-RU',{maximumFractionDigits:1}) + ' млн ' + cur : fmt(n);
+  function yw(n){ n=Math.abs(Math.round(n)); const a=n%10,b=n%100;
+    if(a===1&&b!==11)return 'год'; if(a>=2&&a<=4&&(b<12||b>14))return 'года'; return 'лет'; }
+  const multFor = p => p <= 25 ? 20 : (p <= 35 ? 25 : 33);
+
+  function seg(g, cb){
+    g.addEventListener('click', e => {
+      const b = e.target.closest('button'); if(!b) return;
+      [...g.querySelectorAll('button')].forEach(x => x.classList.remove('is-active'));
+      b.classList.add('is-active'); cb(b); calc();
+    });
+  }
+  seg($('curGroup'), b => { cur = b.dataset.cur; });
+  seg($('rateGroup'), b => { rNom = parseFloat(b.dataset.r); });
+  el.withdraw.addEventListener('input', () => { withdrawTouched = true; });
+  el.expenses.addEventListener('input', () => { if(!withdrawTouched) el.withdraw.value = el.expenses.value; });
+  ids.forEach(i => el[i].addEventListener('input', calc));
+
+  $('revealBtn').addEventListener('click', () => {
+    revealed = true;
+    ['rateStep','resultB','gapStep','finalStep'].forEach(i => $(i).hidden = false);
+    $('question').hidden = true;
+    calc();
+    $('rateStep').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'});
+  });
+
+  function goals(n){
+    const out = [];
+    [1,2,3].forEach(k => {
+      const a = num('g'+k+'a'); if (a <= 0) return;
+      const t = Math.min(n, num('g'+k+'t'));
+      out.push({name: el['g'+k+'n'].value.trim() || 'Цель', a, t});
+    });
+    return out;
+  }
+
+  // Plan in today's money. rNominal -> real rate. Contributions indexed to inflation.
+  function plan(rNominal, n, cap, capFree, gs){
+    const R = (1 + rNominal) / (1 + INFL) - 1;
+    const i = Math.pow(1 + R, 1/12) - 1;
+    const months = n * 12;
+    let req = capFree;
+    gs.forEach(g => { req += g.a * Math.pow(1 + R, n - g.t); });
+    const fvCap = cap * Math.pow(1 + R, n);
+    const rest = Math.max(0, req - fvCap);
+    const factor = Math.abs(i) < 1e-12 ? months : (Math.pow(1 + i, months) - 1) / i;
+    const pmt = rest / factor;
+    // cash check: can each goal be paid on time from what's accumulated?
+    let bal = cap, shortYear = null;
+    gs.filter(g => g.t === 0).forEach(g => { bal -= g.a; });
+    if (bal < -1) shortYear = 0;
+    for (let m = 1; m <= months && shortYear === null; m++){
+      bal = bal * (1 + i) + pmt;
+      gs.forEach(g => { if (Math.round(g.t * 12) === m && g.t > 0) bal -= g.a; });
+      if (bal < -1) shortYear = Math.ceil(m / 12);
+    }
+    return {pmt, fvCap, R, shortYear};
+  }
+
+  function calc(){
+    const now = num('ageNow'), free = num('ageFree'), to = num('ageTo');
+    const n = free - now, p = to - free;
+    const err = $('ageError');
+    if (n < 1 || p < 1){
+      err.hidden = false;
+      err.textContent = n < 1 ? 'Возраст начала жизни на капитал должен быть больше текущего.' : 'Возраст «хватить до» должен быть больше возраста начала жизни на капитал.';
+      return;
+    }
+    err.hidden = true;
+
+    const gs = goals(n);
+
+    // timeline
+    const scale = Math.max(100, to);
+    $('segPast').style.flexBasis = (now/scale*100)+'%';
+    $('segSave').style.flexBasis = (n/scale*100)+'%';
+    $('segFree').style.flexBasis = (p/scale*100)+'%';
+    $('segPast').textContent = now >= 8 ? now : '';
+    $('segSave').textContent = n >= 4 ? n : '';
+    $('segFree').textContent = p >= 4 ? p : '';
+    $('tlMarks').innerHTML = gs.map(g =>
+      `<span class="tl-mark" style="left:${(now+g.t)/scale*100}%" title="${g.name.replace(/"/g,'&quot;')}"><i></i></span>`).join('');
+    $('legendGoal').hidden = gs.length === 0;
+    const ratio = p / n;
+    $('tlCallout').innerHTML = `У тебя <strong>${n} ${yw(n)}</strong>, чтобы накопить на <strong>${p} ${yw(p)}</strong> жизни без зарплаты. ` +
+      (ratio >= 1.05
+        ? `Каждый год накопления должен «прокормить» <strong>${ratio.toLocaleString('ru-RU',{maximumFractionDigits:1})} года</strong> свободы.`
+        : `Копить дольше, чем жить на капитал, — хороший запас прочности.`);
+
+    const inc = num('income'), exp = num('expenses'), w = num('withdraw'), cap = num('capital');
+    $('withdrawLabel').textContent = `С ${free} до ${to} лет буду забирать из капитала в месяц`;
+    $('withdrawWarn').hidden = !(w > 0 && exp > 0 && w < exp);
+
+    const mult = multFor(p);
+    const capFree = w * 12 * mult;
+    const goalsSum = gs.reduce((s,g) => s + g.a, 0);
+
+    // Result 1
+    $('targetLabel').textContent = `Капитал для жизни с ${free} лет`;
+    $('outTarget').textContent = fmtBig(capFree);
+    $('outTargetSub').textContent = `В сегодняшних деньгах. Это ${mult} ${yw(mult)} твоих расходов на свободе.`;
+    $('outGoals').textContent = goalsSum > 0 ? `Плюс крупные цели по пути: ${fmtBig(goalsSum)}. Всего понадобится ${fmtBig(capFree + goalsSum)}.` : '';
+    const year = new Date().getFullYear() + n;
+    $('outNominal').textContent = cur === '₽'
+      ? `В рублях ${year} года эта сумма будет выглядеть заметно больше — из-за инфляции.`
+      : `В деньгах ${year} года, с учётом инфляции 3% в год, это ≈ ${fmtBig(capFree*Math.pow(1+INFL,n))}.`;
+
+    const A = plan(0, n, cap, capFree, gs);
+    const mA = A.pmt;
+    $('outA').textContent = fmt(mA);
+    $('outASub').textContent = `в месяц, ${n} ${yw(n)} подряд` + (inc > 0 ? ` — это ${Math.round(mA/inc*100)}% твоего дохода` : '') +
+      `. Учтено, что лежащие деньги каждый год теряют около 3% из-за инфляции.`;
+    $('kvIncome').textContent = inc > 0 ? fmt(inc) : '—';
+    $('kvSaveA').textContent = fmt(mA);
+    const leftA = inc - mA;
+    $('kvLeftA').textContent = inc > 0 ? fmt(leftA) : '—';
+    $('kvExp').textContent = exp > 0 ? fmt(exp) : '—';
+    $('kvLeftRowA').className = 'kv ' + (inc > 0 && exp > 0 ? (leftA < exp ? 'alert' : 'ok') : '');
+    let ouch = '';
+    if (inc > 0 && exp > 0){
+      if (leftA < 0) ouch = 'Откладывать нужно больше, чем ты зарабатываешь. А на что тогда жить?';
+      else if (leftA < exp) ouch = `На жизнь останется на ${fmt(exp-leftA)} меньше, чем ты тратишь сейчас. А на что тогда жить?`;
+      else ouch = 'Получается даже так. Но посмотри, насколько проще может быть.';
+    }
+    $('ouch').textContent = ouch;
+    $('shortA').hidden = A.shortYear === null;
+    $('shortA').textContent = A.shortYear !== null ? `И ещё: через ${A.shortYear} ${yw(A.shortYear)} накоплений не хватит, чтобы оплатить цель вовремя: часть придётся закрыть из дохода или сдвинуть цель.` : '';
+
+    if (!revealed) return;
+
+    // Result 2
+    const B = plan(rNom, n, cap, capFree, gs);
+    const mB = B.pmt;
+    $('cmpA').textContent = fmt(mA);
+    $('cmpB').textContent = fmt(mB);
+    const times = mB > 0 ? mA / mB : 0;
+    $('cmpSub').textContent = mB > 0
+      ? `В ${times.toLocaleString('ru-RU',{maximumFractionDigits:1})} раза меньше: на ${fmt(mA-mB)} в месяц` + (inc > 0 ? `. Это ${Math.round(mB/inc*100)}% дохода вместо ${Math.round(mA/inc*100)}%.` : '.')
+      : 'Уже накопленного с учётом роста хватает на всё. Откладывать дальше не обязательно.';
+
+    const total = capFree + goalsSum;
+    const own = Math.min(total, cap + mB * n * 12);
+    const growth = Math.max(0, total - own);
+    $('partOwn').style.width = (own/total*100)+'%';
+    $('partGrowth').style.width = (growth/total*100)+'%';
+    $('kvOwn').textContent = fmtBig(own) + ' · ' + Math.round(own/total*100) + '%';
+    $('kvGrowth').textContent = fmtBig(growth) + ' · ' + Math.round(growth/total*100) + '%';
+
+    const pct = Math.min(100, B.fvCap/capFree*100);
+    $('progressBar').style.width = pct+'%';
+    $('progressCap').textContent = cap > 0
+      ? `Если больше не делать взносов, а просто инвестировать уже накопленные ${fmtBig(cap)}, к ${free} годам они вырастут до ${fmtBig(B.fvCap)} в сегодняшних деньгах. Это ${Math.round(pct)}% капитала для свободы. Остальное — задача ежемесячных взносов.`
+      : 'Накоплений пока нет, поэтому всю цифру собирают ежемесячные взносы и их рост.';
+    $('shortB').hidden = B.shortYear === null;
+    $('shortB').textContent = B.shortYear !== null ? `Через ${B.shortYear} ${yw(B.shortYear)} накоплений не хватит, чтобы оплатить цель вовремя: часть придётся закрыть из дохода или сдвинуть цель.` : '';
+
+    // Budget
+    const freeCash = inc - exp;
+    const paths = $('gapPaths');
+    if (inc <= 0 || exp <= 0){
+      $('gapTitle').textContent = 'Заполни доход и расходы, чтобы увидеть, укладываешься ли ты';
+      $('gapLead').textContent = ''; paths.hidden = true; $('gapNote').textContent = '';
+    } else if (mB <= freeCash){
+      $('gapTitle').textContent = 'Ты укладываешься в свой бюджет';
+      $('gapLead').innerHTML = `Сейчас у тебя свободно ${fmt(freeCash)} в месяц, а нужно ${fmt(mB)}. Запас — <b>${fmt(freeCash-mB)}</b>.`;
+      paths.hidden = true;
+      $('gapNote').textContent = 'Запас можно направить на Фундамент (см. ниже) или на то, чтобы приблизить свободу на пару лет.';
+    } else {
+      const gap = mB - Math.max(0, freeCash);
+      $('gapTitle').textContent = `Не хватает ${fmt(gap)} в месяц`;
+      $('gapLead').textContent = freeCash > 0
+        ? `Сейчас свободно ${fmt(freeCash)} в месяц, а нужно ${fmt(mB)}. Цель уже близко. Разницу можно закрыть с двух сторон:`
+        : `Сейчас доход уходит на расходы полностью, а нужно ${fmt(mB)} в месяц. Разницу можно закрыть с двух сторон:`;
+      paths.hidden = false;
+      $('gapEarn').textContent = '+' + fmt(gap);
+      $('gapEarnPct').textContent = `(+${Math.round(gap/inc*100)}% к доходу)`;
+      $('gapCut').textContent = '−' + fmt(gap);
+      $('gapCutPct').textContent = `(${Math.round(gap/exp*100)}% расходов)`;
+      $('gapNote').textContent = `Или по половине: +${fmt(gap/2)} к доходу и −${fmt(gap/2)} к расходам. Ещё два рычага — сдвинуть срок на пару лет или пересмотреть цели.`;
+    }
+    $('foundationText').innerHTML = `То есть уже есть подушка безопасности на 6–12 месяцев расходов (для тебя это <b>${fmtBig(exp*6)} – ${fmtBig(exp*12)}</b>), нет дорогих кредитов и есть страховка жизни и здоровья. Эти деньги в расчёт не входят. Если чего-то пока нет — сначала строится Фундамент, и взносы в капитал начнутся чуть позже или будут меньше. Поэтому точный план обязательно нужно считать с учётом Фундамента — просто это следующий шаг, не сейчас.`;
+    $('nextSum').textContent = fmt(mB);
+  }
+
+  calc();
+})();
+</script>
+</body>
+</html>
